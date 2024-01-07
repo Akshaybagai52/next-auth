@@ -16,25 +16,26 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { LoginSchema } from '@/schema'
+import { RegisterSchema } from '@/schema'
 import { Button } from '../ui/button'
 import { FormError } from '../form-error'
 import { FormSuccess } from '../form-success'
 import { Login } from '@/actions/login'
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: '',
-      password: ''
+      password: '',
+      name: '',
     }
   })
   const [error, setError] = useState<string | undefined>("")
   const [success, setSuccess] = useState<string | undefined>("")
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     setError("")
     setSuccess("")
     startTransition(() => {
@@ -47,9 +48,9 @@ export const LoginForm = () => {
   }
   return (
     <CardWrapper
-      headerLabel='Welcome back'
-      backButtonLabel="Don't have an account?"
-      backButtonHref='/auth/register'
+      headerLabel='Create an account'
+      backButtonLabel="Already have an account"
+      backButtonHref='/auth/login'
       showSocial
     >
       <Form {...form}>
