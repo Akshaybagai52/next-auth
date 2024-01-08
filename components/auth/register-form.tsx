@@ -20,7 +20,7 @@ import { RegisterSchema } from '@/schema'
 import { Button } from '../ui/button'
 import { FormError } from '../form-error'
 import { FormSuccess } from '../form-success'
-import { Login } from '@/actions/login'
+import { register } from '@/actions/register'
 
 export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition()
@@ -29,19 +29,18 @@ export const RegisterForm = () => {
     defaultValues: {
       email: '',
       password: '',
-      name: '',
+      name: ''
     }
   })
-  const [error, setError] = useState<string | undefined>("")
-  const [success, setSuccess] = useState<string | undefined>("")
+  const [error, setError] = useState<string | undefined>('')
+  const [success, setSuccess] = useState<string | undefined>('')
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    setError("")
-    setSuccess("")
+    setError('')
+    setSuccess('')
     startTransition(() => {
-      Login(values)
-      .then((data) => {
-        setError(data.error);
+      register(values).then(data => {
+        setError(data.error)
         setSuccess(data.success)
       })
     })
@@ -49,13 +48,31 @@ export const RegisterForm = () => {
   return (
     <CardWrapper
       headerLabel='Create an account'
-      backButtonLabel="Already have an account"
+      backButtonLabel='Already have an account'
       backButtonHref='/auth/login'
       showSocial
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
           <div className='space-y-4'>
+            <FormField
+              control={form.control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder='John Doe'
+                      type='name'
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name='email'
@@ -96,7 +113,7 @@ export const RegisterForm = () => {
           <FormError message={error} />
           <FormSuccess message={success} />
           <Button type='submit' className='w-full' disabled={isPending}>
-            Login
+            Create an account
           </Button>
         </form>
       </Form>
