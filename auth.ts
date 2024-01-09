@@ -5,8 +5,6 @@ import { db } from "./lib/db";
 import { getUserById } from "./data/user";
 import { UserRole } from "@prisma/client";
 
-
-
 export const {
   handlers: { GET, POST },
   auth,
@@ -14,12 +12,18 @@ export const {
   signOut,
 } = NextAuth({
   callbacks: {
+    async signIn({ user }) {
+      const existingUser = await getUserById(user.id);
+      if (!existingUser || !existingUser.emailVerified) {
+        return false;
+      }
+    },
     async session({ token, session }) {
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
-      if(token.role && session.user) {
-        session.user.role = token.role as UserRole
+      if (token.role && session.user) {
+        session.user.role = token.role as UserRole;
       }
       console.log({ token, session }, "fghg");
       return session;
